@@ -221,6 +221,7 @@ function drawAllStateCasesSel(){
 }
 
 function drawIndivSatesCase() {
+    
     noStroke();
     fill(112, 163, 250);
     textSize(windowWidth*windowHeight/50000);
@@ -310,17 +311,76 @@ function mouseClicked() {
     }
 }
 
-var State = function (name, caseData, deathData, timeline, r, g, b) {
+var State = function (name, totalCaseData, totalDeathData, dailyCases, r, g, b) {
     this.name = name;
-    this.caseData = caseData;
-    this.deathData = deathData;
-    this.timeline = timeline;
+    this.caseData = totalCaseData;
+    this.deathData = totalDeathData;
+    this.timeline = dailyCases;
     this.isSelected = true;
     this.r = r;
     this.g = g;
     this.b = b;
     this.underMouse = false;
 }
+
+
+
+//totalcases:will have zero until we get the first case by states
+
+var totalCaseByState = new Array(95);
+var totalDeathByState = new Array(95);
+var dailyCaseByState = new Array(95);
+
+function fetchTotalCase(stateCodeString){
+
+    
+    
+   
+
+
+    const url = "https://covidtracking.com/api/v1/states/daily.json"
+    fetch(url)
+    .then(function(response){
+      //console.log(response.status);
+      return response.json()
+    })
+    .then(function(data){
+
+       var lengthData =data.length;
+       
+
+       firstDate = data[lengthData -1].date;
+       var found = false;
+       counter = 0;
+       for(let i = lengthData - 1; i>=0; i--){
+
+           if(data[i].state === stateCodeString){
+               totalCaseByState[counter] =  data[i].positive;
+               totalDeathByState[counter] = data[i].death;
+               dailyCaseByState[counter] = data[i].positiveIncrease;
+               found = true;
+           }
+
+           if(!found){
+            totalCaseByState[counter] =  0;
+            totalDeathByState[counter] = 0;
+            dailyCaseByState[counter] = 0;
+           }
+           if(data[i].date != firstDate){
+               firstDate = data[i].date;
+               counter++;
+           }
+       }
+       console.log(totalCaseByState);
+       console.log(stateCodeString);
+    })
+}
+
+
+var totalDeathData = [];
+
+
+
 
 State.prototype.stateButtonDraw = function (x,y,width, height, size) {
     fill(35, 42, 66);
@@ -365,104 +425,157 @@ oklahoma, oregon, pennsylvania, rhodeIsland, southCarolina, southDakota, tenness
 washington, westVirginia, wisconsin, wyoming;
 
 let stateList = [];
-alabama = new State("Alabama",0,0,0,0,0,0);
+fetchTotalCase("AL");
+alabama = new State("Alabama",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(alabama);
-alaska = new State("Alaska",0,0,0,0,0,0);
+
+fetchTotalCase("AK");
+alaska = new State("Alaska",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(alaska);
-arizona = new State("Arizona",0,0,0,0,0,0);
+
+fetchTotalCase("AZ");
+arizona = new State("Arizona",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(arizona);
-arkansas = new State("Arkansas",0,0,0,0,0,0);
+
+fetchTotalCase("AR");
+arkansas = new State("Arkansas",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(arkansas);
-california = new State("California",0,0,0,0,0,0);
+
+fetchTotalCase("CA");
+california = new State("California",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(california);
-colorado = new State("Colorado",0,0,0,0,0,0);
+
+fetchTotalCase();
+colorado = new State("Colorado",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(colorado);
-connecticut = new State("Connecticut",0,0,0,0,0,0);
+
+fetchTotalCase();
+connecticut = new State("Connecticut",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(connecticut);
-delaware = new State("Delaware",0,0,0,0,0,0);
+
+fetchTotalCase();
+delaware = new State("Delaware",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(delaware);
-florida = new State("Florida",0,0,0,0,0,0);
+
+fetchTotalCase();
+florida = new State("Florida",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(florida);
-georgiA = new State("Georgia",0,0,0,0,0,0);
+
+fetchTotalCase();
+georgiA = new State("Georgia",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(georgiA);
-hawaii = new State("Hawaii",0,0,0,0,0,0);
+
+fetchTotalCase();
+hawaii = new State("Hawaii",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(hawaii);
-idaho = new State("Idaho",0,0,0,0,0,0);
+
+fetchTotalCase();
+idaho = new State("Idaho",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(idaho);
-illinois = new State("Illinois",0,0,0,0,0,0);
+
+fetchTotalCase();
+illinois = new State("Illinois",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(illinois);
-indiana = new State("Indiana",0,0,0,0,0,0);
+
+fetchTotalCase();
+indiana = new State("Indiana",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(indiana);
-iowa = new State("Iowa",0,0,0,0,0,0);
+
+fetchTotalCase();
+iowa = new State("Iowa",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(iowa);
-kansas = new State("Kansas",0,0,0,0,0,0);
+
+fetchTotalCase();
+kansas = new State("Kansas",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(kansas);
-kentucky = new State("Kentucky",0,0,0,0,0,0);
+
+fetchTotalCase();
+kentucky = new State("Kentucky",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(kentucky);
-louisiana = new State("Louisiana",0,0,0,0,0,0);
+
+fetchTotalCase();
+louisiana = new State("Louisiana",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(louisiana);
-maine = new State("Maine",0,0,0,0,0,0);
+
+fetchTotalCase();
+maine = new State("Maine",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(maine);
-maryland = new State("Maryland",0,0,0,0,0,0);
+
+fetchTotalCase();
+maryland = new State("Maryland",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(maryland);
-massachusetts = new State("Massachusetts",0,0,0,0,0,0);
+
+fetchTotalCase();
+massachusetts = new State("Massachusetts",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(massachusetts);
-michigan = new State("Michigan",0,0,0,0,0,0);
+
+fetchTotalCase();
+michigan = new State("Michigan",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(michigan);
-minnesota = new State("Minnesota",0,0,0,0,0,0);
+
+fetchTotalCase();
+minnesota = new State("Minnesota",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(minnesota);
-mississippi = new State("Mississippi",0,0,0,0,0,0);
+
+fetchTotalCase();
+mississippi = new State("Mississippi",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(mississippi);
-missouri = new State("Missouri",0,0,0,0,0,0);
+
+fetchTotalCase();
+missouri = new State("Missouri",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(missouri);
-montana = new State("Montana",0,0,0,0,0,0);
+montana = new State("Montana",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(montana);
-nebraska = new State("Nebraska",0,0,0,0,0,0);
+nebraska = new State("Nebraska",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(nebraska);
-nevada = new State("Nevada",0,0,0,0,0,0);
+nevada = new State("Nevada",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(nevada);
-newHampshire = new State("New Hampshire",0,0,0,0,0,0);
+newHampshire = new State("New Hampshire",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(newHampshire);
-newJersey = new State("New Jersey",0,0,0,0,0,0);
+newJersey = new State("New Jersey",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(newJersey);
-newMexico = new State("New Mexico",0,0,0,0,0,0);
+newMexico = new State("New Mexico",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(newMexico);
-newYork = new State("New York",0,0,0,0,0,0);
+
+fetchTotalCase("NY");
+newYork = new State("New York",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(newYork);
-northCarolina = new State("North Carolina",0,0,0,0,0,0);
+northCarolina = new State("North Carolina",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(northCarolina);
-northDakota = new State("North Dakota",0,0,0,0,0,0);
+northDakota = new State("North Dakota",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(northDakota);
-ohio = new State("Ohio",0,0,0,0,0,0);
+ohio = new State("Ohio",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(ohio);
-oklahoma = new State("Oklahoma",0,0,0,0,0,0);
+oklahoma = new State("Oklahoma",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(oklahoma);
-oregon = new State("Oregon",0,0,0,0,0,0);
+oregon = new State("Oregon",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(oregon);
-pennsylvania = new State("Pennsylvania",0,0,0,0,0,0);
+pennsylvania = new State("Pennsylvania",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(pennsylvania);
-rhodeIsland = new State("Rhode Island",0,0,0,0,0,0);
+rhodeIsland = new State("Rhode Island",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(rhodeIsland);
-southCarolina = new State("South Carolina",0,0,0,0,0,0);
+southCarolina = new State("South Carolina",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(southCarolina);
-southDakota = new State("South Dakota",0,0,0,0,0,0);
+southDakota = new State("South Dakota",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(southDakota);
-tennessee = new State("Tennessee",0,0,0,0,0,0);
+tennessee = new State("Tennessee",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(tennessee);
-texas = new State("Texas",0,0,0,0,0,0);
+texas = new State("Texas",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(texas);
-utah = new State("Utah",0,0,0,0,0,0);
+utah = new State("Utah",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(utah);
-vermont = new State("Vermont",0,0,0,0,0,0);
+vermont = new State("Vermont",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(vermont);
-virginia = new State("Virginia",0,0,0,0,0,0);
+virginia = new State("Virginia",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(virginia);
-washington = new State("Washington",0,0,0,0,0,0);
+
+fetchTotalCase("WA");
+washington = new State("Washington",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(washington);
-westVirginia = new State("West Virginia",0,0,0,0,0,0);
+westVirginia = new State("West Virginia",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(westVirginia);
-wisconsin = new State("Wisconsin",0,0,0,0,0,0);
+wisconsin = new State("Wisconsin",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(wisconsin);
-wyoming = new State("Wyoming",0,0,0,0,0,0);
+wyoming = new State("Wyoming",totalCaseByState,totalDeathByState,dailyCaseByState,0,0,0);
 stateList.push(wyoming);
 
