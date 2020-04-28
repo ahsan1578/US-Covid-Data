@@ -23,6 +23,8 @@ var State = function (name, caseData, deathData, dailyCases, r, g, b) {
     this.g = g;
     this.b = b;
     this.underMouse = false;
+    this.totalBeds = 0;
+    this.icuBeds = 0;
 }
 
 State.prototype.stateButtonDraw = function (x,y,width, height, size) {
@@ -65,6 +67,11 @@ State.prototype.setStateData = function(totalCases, totalDeath, totalDailyCases)
     this.caseData = totalCases;
     this.deathData = totalDeath;
     this.dailyCaseData = totalDailyCases;
+}
+
+State.prototype.setBeds = function(totalBeds, icuBeds){
+    this.totalBeds = totalBeds;
+    this.icuBeds = icuBeds;
 }
 
 let alabama, alaska, arizona, arkansas, california, colorado, connecticut, delaware, florida, georgiA, hawaii, idaho,
