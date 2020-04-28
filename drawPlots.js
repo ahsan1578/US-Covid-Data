@@ -64,10 +64,8 @@ function drawPlots(){
   grph.yInterv(Math.max.apply(null,data) * 0.1);
   grph.axis(0, days.length, 0, max);
   
-  if(dailyCases == false){
-  grph.addFunc(function(x){return selectedState.icuBeds}, color = 'RED');
   grph.addFunc(function(x){return selectedState.totalBeds}, color = 'YELLOW');
-  }
+  grph.addFunc(function(x){return selectedState.icuBeds}, color = 'RED');
   
   grph.backgroundCol([61,68,94]);
   grph.drawGridLines(true);
