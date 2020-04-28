@@ -1,0 +1,78 @@
+
+/**
+ * @param title title for plot
+ * @param caseData day by day cumulative total cases in the state, type array
+ * @param dailyCaseData day by day new cases in the state, type array
+ * @param days number of days
+ * @param indexFirstDay used to find index in data that holds first case
+ * @param max max for y-axis
+ * @param data holds data
+ * 
+ */
+
+
+function drawPlots(){
+  let title;
+  let days = [];
+  let indexFirstDay = 0;
+  let max;
+  let data;
+  
+  if(dailyCases == false){
+    data = selectedState.caseData;
+    title = "Total Cases";
+  }
+  else{
+    data = selectedState.dailyCaseData;
+    title = "Total Daily New Cases";
+  }
+  
+  if(dailyCases == false){
+  max = Math.max((selectedState.icuBeds*1.25), (Math.max.apply(null,data)*1.5))
+  }
+  else{
+    max = Math.max.apply(null,data)*1.5;
+  }
+  
+  
+  for(i = 0; i < data.length; i++){
+    if(data[i] == 0){
+    indexFirstDay++;
+    }
+    else{
+      break;
+    }
+  }
+  
+  data = data.slice(indexFirstDay, data.length);
+
+   for(let i = 0; i< data.length;i++){
+      days[i] = i + 1;
+  }
+  
+ 
+//plots graph
+  
+  let grph = new Graph('xy');
+  grph.xLabel("Days", [0, -8]);
+  grph.yLabel("Number of Cases", [-8,0]);
+  grph.title(title, [0, 20]);
+
+  grph.addPoints([days, data], 'lists', [255,255,255]);
+
+  grph.xInterv(10);
+  grph.yInterv(Math.max.apply(null,data) * 0.1);
+  grph.axis(0, days.length, 0, max);
+  
+  if(dailyCases == false){
+  grph.addFunc(function(x){return selectedState.icuBeds}, color = 'RED');
+  }
+  
+  grph.backgroundCol([61,68,94]);
+  grph.drawGridLines(true);
+  
+  grph.canvasLocation(windowWidth*0.05, windowHeight*0.05, windowWidth*0.65, windowHeight*0.8);
+  grph.show();
+
+}
+
