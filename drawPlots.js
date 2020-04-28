@@ -28,7 +28,7 @@ function drawPlots(){
   }
   
   if(dailyCases == false){
-  max = Math.max((selectedState.icuBeds*1.25), (Math.max.apply(null,data)*1.5))
+  max = Math.max((selectedState.totalbeds*1.25), (Math.max.apply(null,data)*1.5))
   }
   else{
     max = Math.max.apply(null,data)*1.5;
@@ -66,6 +66,7 @@ function drawPlots(){
   
   if(dailyCases == false){
   grph.addFunc(function(x){return selectedState.icuBeds}, color = 'RED');
+  grph.addFunc(function(x){return selectedState.totalBeds}, color = 'YELLOW');
   }
   
   grph.backgroundCol([61,68,94]);
