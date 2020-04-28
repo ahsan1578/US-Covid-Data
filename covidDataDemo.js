@@ -3,9 +3,8 @@
  * @version 1.0
  */
 
-let day = 1;
-let month = "January";
-let year = 2020;
+const firstDay = new Date(2020,0,22);
+let currDay = new Date(2020,0,22);
 let allStates = true;
 let overAllStates = false;
 let overEachState = false;
@@ -18,23 +17,61 @@ let dailyCases = false;
 let overC = false;
 let overD = false;
 let selectedState = null;
-
+let plotXZero = 0;
+let plotYZero = 0;
+let plotWidth = 0;
+let plotHeight = 0;
+let xScale = 0;
+let yScale = 0;
+let countUp = 0;
+let notYetPlayed = true;
+let isMaxK = false;
+let isOnPlot = false;
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
     background(61,68,94);
+    frameRate(8);
 }
 
 function draw() {
     background(61,68,94);
     cursor(ARROW);
-    drawPlotRect();
     sideBarGeneric();
+    drawPlotRect();
     drawAllStatesSideBar();
     if(allStates) {
         drawAllStateCasesSel();
+        if(!notYetPlayed){
+            let type = "";
+            let len = 0;
+            if(totalDeaths){
+                type = "death";
+                len = stateList[0].deathData.length-1;
+            }else {
+                type = "case";
+                len = stateList[0].caseData.length-1;
+            }
+            animatePlot(type);
+            if(onPlay && countUp < len) {
+                countUp++;
+                currDay.setDate(currDay.getDate()+1);
+            }else if(countUp >= len){
+                isMaxK = true;
+                onPlay = false;
+            }
+        }
     }else {
         drawIndivSatesCase();
+    }
+}
+
+function  animatePlot(type) {
+    setScale(type);
+    for(let i = 0; i<50; i++){
+        if(stateList[i].isSelected){
+            stateList[i].drawAnimatedPlot(countUp, plotXZero, plotYZero, xScale,yScale, type);
+        }
     }
 }
 
@@ -45,6 +82,10 @@ function drawPlotRect() {
     let yEnd = windowHeight*0.8;
     let width = xEnd - xStart;
     let height = yEnd - yStart;
+    plotXZero = xStart;
+    plotYZero = yEnd;
+    plotWidth = width;
+    plotHeight = height;
     stroke(157, 189, 242);
     strokeWeight(2.5);
     noFill();
@@ -58,6 +99,22 @@ function drawPlotRect() {
     }
     for(let i = 1; i<=10; i++){
         line(xStart, yStart+i*yInterval, xEnd, yStart+ i*yInterval);
+    }
+    if(mouseX >= xStart && mouseX <= xEnd && mouseY >= yStart && mouseY <= yEnd){
+        isOnPlot = true;
+        if(allStates) {
+            textSize(15);
+            fill(255);
+            noStroke();
+            let xVal = Math.floor(((mouseX - xStart) / xScale) + 1);
+            let yVal = Math.floor(((height + yStart) - mouseY) / yScale);
+            let date = new Date(2020, 0, 22 + xVal - 1);
+            if (xVal !== Infinity && yVal !== Infinity) {
+                text(getDateString(date) + ",  " + yVal, mouseX , mouseY);
+            }
+        }
+    }else {
+        isOnPlot = false;
     }
 }
 
@@ -182,7 +239,7 @@ function drawAllStateCasesSel(){
     noStroke();
     fill(112, 163, 250);
     textSize(windowWidth*windowHeight/50000);
-    text(month+" "+day + ", "+year, windowWidth * 0.27, windowHeight* 0.855);
+    text(getDateString(currDay), windowWidth * 0.27, windowHeight* 0.855);
     if(overC){
         fill(0,0,255);
     }else if(!totalDeaths){
@@ -277,6 +334,10 @@ function mouseClicked() {
         allStates = false;
         onPlay = false;
         selectedState = null;
+        countUp = 0;
+        currDay.setDate(firstDay.getDate());
+        currDay.setMonth(firstDay.getMonth());
+        currDay.setFullYear(firstDay.getFullYear());
     }
     if(allStates){
         for (let i = 0; i<50; i++){
@@ -289,6 +350,14 @@ function mouseClicked() {
             }
         }
         if(overPlayButton){
+            notYetPlayed = false;
+            if(!onPlay && isMaxK){
+                countUp = 0;
+                currDay.setDate(firstDay.getDate());
+                currDay.setMonth(firstDay.getMonth());
+                currDay.setFullYear(firstDay.getFullYear());
+                isMaxK = false;
+            }
             onPlay = !onPlay;
         }
         if(overC){
@@ -308,4 +377,93 @@ function mouseClicked() {
             dailyCases = true;
         }
     }
+    if(isOnPlot){
+        countUp = Math.floor(((mouseX- plotXZero)/xScale));
+        if(countUp <0 || countUp === Infinity || isNaN(countUp)){
+            countUp = 0;
+        }else if(countUp > stateList[0].caseData.length-1){
+            countUp = stateList[0].caseData.length-1;
+        }
+        currDay.setDate(firstDay.getDate());
+        currDay.setMonth(firstDay.getMonth());
+        currDay.setFullYear(firstDay.getFullYear());
+        currDay.setDate(currDay.getDate()+countUp);
+    }
+}
+
+function getMax(type){
+    let xMax = 0;
+    if(type === "case") {
+        xMax = stateList[0].caseData.length;
+    }else {
+        xMax = stateList[0].deathData.length;
+    }
+    let yMax = 0;
+    for(let i = 0; i<50 ; i++){
+        if(stateList[i].isSelected){
+            if(type === "case"){
+                let m = stateList[i].caseData[xMax - 1];
+                if(m>yMax){
+                    yMax = m;
+                }
+            }else if(type === "death"){
+                let m = stateList[i].deathData[xMax - 1];
+                if(m>yMax){
+                    yMax = m;
+                }
+            }
+        }
+    }
+    return [xMax, yMax];
+}
+
+function setScale(type) {
+    xScale = (plotWidth/getMax(type)[0]) ;
+    yScale = (plotHeight/getMax(type)[1]) ;
+}
+
+function getDateString(date) {
+    let day = date.getDate();
+    let month = date.getMonth();
+    let year = date.getFullYear();
+    let stringMonth = "";
+    switch (month) {
+        case 0:
+            stringMonth = "January";
+            break;
+        case 1:
+            stringMonth = "February";
+            break;
+        case 2:
+            stringMonth = "March";
+            break;
+        case 3:
+            stringMonth = "April";
+            break;
+        case 4:
+            stringMonth = "May";
+            break;
+        case 5:
+            stringMonth = "June";
+            break;
+        case 6:
+            stringMonth = "July";
+            break;
+        case 7:
+            stringMonth = "August";
+            break;
+        case 8:
+            stringMonth = "September";
+            break;
+        case 9:
+            stringMonth = "October";
+            break;
+        case 10:
+            stringMonth = "November";
+            break;
+        case 11:
+            stringMonth = "December";
+            break;
+    }
+    return stringMonth+" "+day+", "+year;
 }

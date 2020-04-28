@@ -25,6 +25,7 @@ var State = function (name, caseData, deathData, dailyCases, r, g, b) {
     this.underMouse = false;
     this.totalBeds = 0;
     this.icuBeds = 0;
+    this.shortForm = "St";
 }
 
 State.prototype.stateButtonDraw = function (x,y,width, height, size) {
@@ -72,6 +73,40 @@ State.prototype.setStateData = function(totalCases, totalDeath, totalDailyCases)
 State.prototype.setBeds = function(totalBeds, icuBeds){
     this.totalBeds = totalBeds;
     this.icuBeds = icuBeds;
+}
+
+State.prototype.drawAnimatedPlot = function(dayNumber, xStart, yStart, scaleX, scaleY, type){
+    let currX = xStart;
+    let currY = yStart;
+    for(let i = 0; i<= dayNumber; i++){
+        let nextX = xStart + i*scaleX;
+        let nextY = 0;
+        if(type === "case"){
+            nextY = yStart - scaleY*this.caseData[i];
+        }else if(type === "death"){
+            nextY = yStart - scaleY*this.deathData[i];
+        }
+        stroke(this.r, this.g, this.b);
+        strokeWeight(2);
+        line(currX,currY, nextX, nextY);
+        currX = nextX;
+        currY = nextY;
+    }
+    noStroke();
+    fill(this.r, this.g, this.b);
+    textSize(15);
+    text(this.shortForm, currX, currY);
+}
+
+
+State.prototype.setColors = function(r,g,b){
+    this.r  = r;
+    this.g = g;
+    this.b = b;
+}
+
+State.prototype.setShortForm = function(short){
+    this.shortForm = short;
 }
 
 let alabama, alaska, arizona, arkansas, california, colorado, connecticut, delaware, florida, georgiA, hawaii, idaho,
@@ -185,4 +220,12 @@ wisconsin = new State("Wisconsin",0,0,0,0,0,0);
 stateList.push(wisconsin);
 wyoming = new State("Wyoming",0,0,0,0,0,0);
 stateList.push(wyoming);
+
+for(let i = 0; i<50; i++){
+    let r = 100 + Math.floor(Math.random() * 155);
+    let g = 100 + Math.floor(Math.random() * 155);
+    let b =  Math.floor(Math.random() * 200);
+    stateList[i].setColors(r,g,b);
+    stateList[i].setShortForm(stateShortForms[i]);
+}
 
