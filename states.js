@@ -37,7 +37,7 @@ State.prototype.stateButtonDraw = function (x,y,width, height, size) {
     if (this.underMouse) {
         fill(255, 0, 0);
         cursor(HAND);
-    }else if(this.isSelected){
+    }else if(this.isSelected || (!allStates && selectedState === this)){
         fill(157, 189, 242);
     }else{
         fill(255);
@@ -95,7 +95,11 @@ State.prototype.drawAnimatedPlot = function(dayNumber, xStart, yStart, scaleX, s
     noStroke();
     fill(this.r, this.g, this.b);
     textSize(15);
-    text(this.shortForm, currX, currY);
+    if(type === "case") {
+        text(this.shortForm + " (" + this.caseData[dayNumber] + ")", currX, currY);
+    }else if (type === "death"){
+        text(this.shortForm + " (" + this.deathData[dayNumber] + ")", currX, currY);
+    }
 }
 
 

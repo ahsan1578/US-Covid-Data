@@ -37,11 +37,10 @@ function setup() {
 function draw() {
     background(61,68,94);
     cursor(ARROW);
-    sideBarGeneric();
     drawPlotRect();
-    drawAllStatesSideBar();
     if(allStates) {
         drawAllStateCasesSel();
+        drawAllStatesSideBar();
         if(!notYetPlayed){
             let type = "";
             let len = 0;
@@ -63,7 +62,10 @@ function draw() {
         }
     }else {
         drawIndivSatesCase();
+        drawAllStatesSideBar();
+        drawPlots();
     }
+    sideBarGeneric();
 }
 
 function  animatePlot(type) {
@@ -333,7 +335,8 @@ function mouseClicked() {
     if(overEachState){
         allStates = false;
         onPlay = false;
-        selectedState = null;
+        selectedState = stateList[30];
+        stateList[30].isSelected = true;
         countUp = 0;
         currDay.setDate(firstDay.getDate());
         currDay.setMonth(firstDay.getMonth());
