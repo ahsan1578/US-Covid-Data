@@ -21,6 +21,7 @@ function drawPlots(){
   if(dailyCases === false){
     data = selectedState.caseData;
     title = "Total Cases";
+     max = Math.max((selectedState.totalbeds*1.25), (Math.max.apply(null,data)*1.5))
   }
   else{
     data = selectedState.dailyCaseData;
