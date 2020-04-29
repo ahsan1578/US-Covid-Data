@@ -143,15 +143,12 @@ class Graph {
       if (Array.isArray(col_) && col_.every(x => x >= 0 && x <= 255)) {
         return col_
       } else {
-        console.log("BROKEN:", col_)
-        console.log('color format unable to be parsed. use an array:[r,g,b]. or a graphing Color')
         return this.colorList["RED"]
       }
     } else {
       try {
         return this.colorList[col_]
       } catch (err) {
-        console.log('color unable to be parsed, using default color red')
         return this.colorList["RED"]
       }
     }
@@ -538,7 +535,6 @@ class Graph {
    */
   bestfit(label = true, color = "RED") {
     if (!this.data.points.values) {
-      console.log('NO DATA POINTS: input data points with addpoints([x],[y]) to use bestfit() function')
       return
     }
     let [m, b] = this.regression(this.data.points.values)
@@ -552,7 +548,7 @@ class Graph {
     if (!this.data.bounds) this.canvasLocation(0, 0, width, height)
     if (!this.data.backgroundCol) this.backgroundCol([255, 255, 255])
 
-    console.log(this.data)
+
 
     //  translate to allocated area to draw the xy data
     push()
@@ -643,8 +639,6 @@ class Graph {
       currentAng += angles[element]
       i++
     }
-
-    console.log(angles)
   }
 
   /**

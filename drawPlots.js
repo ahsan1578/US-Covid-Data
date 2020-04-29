@@ -89,8 +89,6 @@ function drawPlots(){
   }
   let startDate = new Date(2020,0,22+len-data.length);
   let endDate = new Date(2020,0,22+len-1);
-  console.log(startDate);
-  console.log(endDate);
   fill(255);
   noStroke();
   textSize(13);
