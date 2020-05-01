@@ -38,6 +38,7 @@ function draw() {
     background(61,68,94);
     cursor(ARROW);
     drawPlotRect();
+    sideBarGeneric();
     if(allStates) {
         drawAllStateCasesSel();
         drawAllStatesSideBar();
@@ -65,7 +66,7 @@ function draw() {
         drawAllStatesSideBar();
         drawPlots();
     }
-    sideBarGeneric();
+
 }
 
 function  animatePlot(type) {
